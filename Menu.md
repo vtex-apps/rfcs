@@ -21,7 +21,7 @@ The reference for this example is the current menu implemented by Al's Sporting 
 
 Let's focus on just the `Men's` submenu, as shown in the image. To achieve this menu layout, users would write something like this into a `navigation.json`file:
 
-```json
+```jsonc
 {
   "main-navigation": {
     "id": "39214",
@@ -108,7 +108,7 @@ Let's focus on just the `Men's` submenu, as shown in the image. To achieve this 
 
 Then simply use the `menu`block in their theme, but now in a much simpler way, since a lot of the customisation of individual items will happen via CMS:
 
-```json
+```jsonc
 {
   "menu": {
     "props": {
@@ -134,7 +134,7 @@ With the two bits of code above, you should be able to generate a simple navigat
 
 From this point on, the customisation of each submenu inside each of the `menu-item`s is done using the CMS and implemented `submenu`blocks. For the example we're working on, let's consider the submenu shown in the first image of the menu, where we have a **Featured** list of items and a few other lists which look all the same. To represent this kind of layout, a `submenu`block should be implemented, such as a `submenu.default`:
 
-```json
+```jsonc
 {
   // All of this configuration should be made via CMS
   "submenu.default": {
@@ -238,7 +238,7 @@ Another important block that will behave differently than the way it currently b
 
 Each `submenu` variant will have a `contentSchema` that look something like this:
 
-```json
+```jsonc
 // submenu.default example (refer to the previous section)
 {
   "contentSchema": {
@@ -290,7 +290,7 @@ Here is another example of possible `contentSchema` for a `submenu.brands`, that
 
 ![als-submenu-brands](https://user-images.githubusercontent.com/27777263/77102162-2b267280-69f7-11ea-8018-db0d204e339e.png)
 
-```json
+```jsonc
 // submenu.brands
 {
   "contentSchema": {
