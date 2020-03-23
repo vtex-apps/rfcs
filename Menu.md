@@ -24,51 +24,51 @@ Let's focus on just the `Men's` submenu, as shown in the image. To achieve this 
 ```jsonc
 {
   "main-navigation": {
-    "id": "39214",
+    "id": 39214,
     "title": "Main Navigation",
     "items": [
       {
-        "id": "41201",
+        "id": 41201,
         "label": "Men's",
         "link": "#",
         // The value for "child" should be the ID
         // of another navigation.
-        "child": "39215"
+        "child": 39215
       },
       {
-        "id": "41202",
+        "id": 41202,
         "label": "Women's",
         "link": "#",
-        "child": "39216"
+        "child": 39216
       },
       // (...)
       {
-        "id": "41203",
+        "id": 41203,
         "label": "Brand's",
         "link": "#",
-        "child": "39217"
+        "child": 39217
       }
     ]
   },
   
   "mens": {
-    "id": "39215",
+    "id": 39215,
     "title": "Men's",
     "items": [
       {
-        "id": "41201",
+        "id": 41201,
         "label": "Clothing",
         "link": "/Clothing/Mens?map=c%2CspecificationFilter_7721",
         "child": "39216"
       },
       {
-        "id": "41202",
+        "id": 41202,
         "label": "Footwear",
         "link": "/footwear/Mens?map=c%2CspecificationFilter_7721",
         // (...)
       },
       {
-        "id": "41203",
+        "id": 41203,
         "label": "Accessories",
         "link": "/clothing/accessories/Mens?map=c%2Cc%2CspecificationFilter_7721",
         // (...)
@@ -77,26 +77,26 @@ Let's focus on just the `Men's` submenu, as shown in the image. To achieve this 
   },
   
   "mens-clothing": {
-    "id": "39216",
+    "id": 39216,
     "title": "Men's Clothing",
     "items": [
       {
-        "id": "41201",
+        "id": 41201,
         "label": "Jackets",
         "link": "/Clothing/Jackets/Mens?map=c%2Cc%2CspecificationFilter_7721",
       },
       {
-        "id": "41202",
+        "id": 41202,
         "label": "Shirts",
         "link": "/Clothing/Shirts/Mens?map=c%2Cc%2CspecificationFilter_7721",
       },
       {
-        "id": "41203",
+        "id": 41203,
         "label": "Hoodies & Sweaters",
         "link": "/Clothing/Hoodies---Sweatshirts/Mens?map=c%2Cc%2CspecificationFilter_7721",
       },
       {
-        "id": "41204",
+        "id": 41204,
         "label": "Pants",
         "link": "/clothing/Mens/pants?map=c,specificationFilter_7721,c"
       },
@@ -115,7 +115,7 @@ Then simply use the `menu`block in their theme, but now in a much simpler way, s
       "mainNavigation": {
         // Notice this id comes from the navigation.json file
         // and matches a certain navigation.
-        "id": "39214",
+        "id": 39214,
         // This menu-item.root block will be used to render
         // the items from the navigation referenced above.
         "Item": "menu-item.root"
