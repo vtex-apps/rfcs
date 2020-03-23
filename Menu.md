@@ -115,10 +115,10 @@ Then simply use the `menu`block in their theme, but now in a much simpler way, s
       "mainNavigation": {
         // Notice this id comes from the navigation.json file
         // and matches a certain navigation.
-        id: 39214,
+        "id": "39214",
         // This menu-item.root block will be used to render
         // the items from the navigation referenced above.
-        Item: 'menu-item.root'
+        "Item": "menu-item.root"
       }
     },
   },
@@ -138,17 +138,19 @@ From this point on, the customisation of each submenu inside each of the `menu-i
 {
   // All of this configuration should be made via CMS
   "submenu.default": {
-    "mainNavigation": {
-      // Notice that there is no id attribute
-      // for this navigation. This will be explained
-      // in the Technical Details section.
-      "Item": "menu-item.list"
-    },
-    "featuredNavigation": {
-      "id": 1234,
-      "Item": "menu-item.featured"
-    },
-    "bottomText": "Free shipping on orders over $45"
+    "props": {
+      "mainNavigation": {
+        // Notice that there is no id attribute
+        // for this navigation. This will be explained
+        // in the Technical Details section.
+        "Item": "menu-item.list"
+      },
+      "featuredNavigation": {
+        "id": 1234,
+        "Item": "menu-item.featured"
+      },
+      "bottomText": "Free shipping on orders over $45"
+    }
   }
 }
 ```
@@ -167,21 +169,21 @@ In this section we'll go into the technical details and how we expect to impleme
 
 We're introducing a new concept to the framework: **Navigations**.
 
-Navigations are a way to represent a navigation structure as a _tree_ which will be used to build menus. Each navigation is identified by a unique **id** and contains **items**, which can be interpreted as adjacent nodes. These navigations will be placed at a new `/store/nagivation.json` file and picked-up by the Store builder. A sample JSON Schema definition for a navigation is the following:
+Navigations are a way to represent a navigation structure as a _tree_ which will be used to build menus. Each navigation is identified by a unique **id** and contains **items**, which can be interpreted as adjacent nodes. These navigations will be placed at a new `/store/navigation.json` file and picked-up by the Store builder. A sample JSON Schema definition for a navigation is the following:
 
 ```json
 {
-  "title": "String",
-  "id": "Number",
+  "title": "string",
+  "id": "number",
   "items": {
     "type": "array",
     "items": {
       "type": "object",
       "properties": {
-        "id": "String",
-        "label": "String",
-        "link": "String",
-        "child": "Number"
+        "id": "number",
+        "label": "string",
+        "link": "string",
+        "child": "number"
       },
     }
   }
@@ -190,10 +192,17 @@ Navigations are a way to represent a navigation structure as a _tree_ which will
 
 The new `menu` block would be simpler and the expected implementation would be something along the lines of:
 
-
 ```tsx
-const Menu = ({ navigationId, Item }) => {
-  const navigation = useNavigation(navigationId)
+interface Props {
+  mainNavigation: {
+    id: number
+    Item: ReactElement
+  }
+}
+
+const Menu: FC<Props> = ({ mainNavigation }) => {
+  const navigation = useNavigation(mainNavigation.id)
+  const { Item } = mainNavigation
 
   return (
     <Fragment>
@@ -209,15 +218,15 @@ const Menu = ({ navigationId, Item }) => {
 Menu.contentSchema = {
   properties: {
     mainNavigation: {
-      format: 'Navigation'
+      format: 'Navigation',
       type: 'object',
       properties: {
         id: {
-          type: 'string',
+          type: 'number',
           format: 'NavigationId'
         },
         Item: {
-          type: 'string,
+          type: 'string',
           format: 'Block'
         }
       }
@@ -226,7 +235,7 @@ Menu.contentSchema = {
 }
 ```
 
-The key point in this new implementation is the presence of a a `mainNavigation` prop, which takes an object with an `id` field - this should be the unique ID of a certain navigation defined over at `navigation.json` - and the `Item` prop, which is the first use of [Slots](https://github.com/vtex-apps/store-discussion/issues/213)  in our native blocks. 
+The key point in this new implementation is the presence of a a `mainNavigation` prop, which takes an object with an `id` field - this should be the unique ID of a certain navigation defined over at `navigation.json` - and the `Item` prop, which is the first use of [Slots](https://github.com/vtex-apps/store-discussion/issues/213)  in our native blocks.
 
 What this bit of code means it that the `menu` block will use the component it receives via `mainNavigation.Item` to render each individual item in the navigation with `id === mainNavigation.id`. In most cases, the block passed to `Item` will be a  variation of the `menu-item` interface.
 
@@ -243,39 +252,39 @@ Each `submenu` variant will have a `contentSchema` that look something like this
 {
   "contentSchema": {
     "properties": {
-      mainNavigation: {
-        format: 'ChildNavigation',
-        type: 'object',
-        properties: {
-          id: {
-            disabled: true,
-            type: 'string',
-            format: 'NavigationIdFromParent'
-          },
-          Item: {
-            type: 'string,
-            default: 'menu-item.list',
-            format: 'Block'
+      "mainNavigation": {
+        "format": "ChildNavigation",
+        "type": "object",
+        "properties": {
+        "id": {
+          "disabled": true,
+          "type": "number",
+          "format": "NavigationIdFromParent"
+        },
+        "Item": {
+          "type": "string",
+          "default": "menu-item.list",
+          "format": "Block"
           }
         }
       },
-      featuredLinks: {
-        format: 'Navigation'
-        type: 'object',
-        properties: {
-          id: {
-            type: 'string',
-            format: 'NavigationId'
+      "featuredLinks": {
+        "format": "Navigation",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "format": "NavigationId"
           },
-          Item: {
-            type: 'string,
-            format: 'Block'
+          "Item": {
+            "type": "string",
+            "format": "Block"
           }
         }
       },
-      bottomText: {
-        type: 'string',
-        format: 'Text'
+      "bottomText": {
+        "type": "string",
+        "format": "Text"
       }
     }
   }
@@ -284,7 +293,7 @@ Each `submenu` variant will have a `contentSchema` that look something like this
 
 This is an example of what the API for the `submenu.default` block would look like. We also expect a few variations of `submenu`s being implemented to achieve different layouts. Notice that `bottomText` and `featuredLinks` props **could be arbitrary**, these only apply to this specific layout we are using as an example. The `mainNavigation` prop on the other hand is a **default** on every `submenu`, and should always expect a `ChildNavigation` object. This object is the same as a regular navigation, expect that the `id` value is **not** generated by the user, but received from the submenu's parent node in the navigation tree (this is where the `"child"` attribute inside an `item` comes in). A user would just choose a new `Item` that should be used to render items of this `submenu`.
 
-A very important consideration about `submenu`s is that they will be implemented by developers, but will mostly be used and customised via the new CMS, where a user would be able to see all available, previously implemented `submenu`s and then place then inside of certain `menu-item`. 
+A very important consideration about `submenu`s is that they will be implemented by developers, but will mostly be used and customised via the new CMS, where a user would be able to see all available, previously implemented `submenu`s and then place then inside of certain `menu-item`.
 
 Here is another example of possible `contentSchema` for a `submenu.brands`, that would be used to achieve the layout below.
 
@@ -296,24 +305,24 @@ Here is another example of possible `contentSchema` for a `submenu.brands`, that
   "contentSchema": {
     "properties": {
       "mainNavigation": {
-        "format": 'ChildNavigation',
-        "type": 'object',
+        "format": "ChildNavigation",
+        "type": "object",
         "properties": {
           "id": {
             "disabled": true,
-            "type": 'string',
-            "format": 'NavigationIdFromParent'
+            "type": "number",
+            "format": "NavigationIdFromParent"
           },
           "Item": {
-            "type": 'string',
-            "default": 'menu-item.brand',
-            "format": 'Block'
+            "type": "string",
+            "default": "menu-item.brand",
+            "format": "Block"
           }
         }
       },
       "bottomText": {
         "type": "string",
-        "format": 'Text'
+        "format": "Text"
       }
     }
   }
@@ -324,14 +333,14 @@ In this case, using the CMS the user would see a structure similar structure to 
 
 ```
 Header
-  	Menu
-    	Main Navigation
-      	*Men's
-        	Submenu: Default
-          	Featured Links
-            	*Gift Guide
-            	*Winter Jackets
-            	*Winter Pants
+  Menu
+    Main Navigation
+      *Men's
+        Submenu: Default
+          Featured Links
+            *Gift Guide
+            *Winter Jackets
+            *Winter Pants
           Child Navigation
             *Clothing
               *Jackets
@@ -341,18 +350,18 @@ Header
             *Accessories
               *Hats
               *Gloves
-        *Women's
-        *Brand's
-          Submenu: Brands
-            Child Navigation
-            	*The North Face
-            	*Patagonia
-            	*Hydro Flask
+      *Women's
+      *Brand's
+        Submenu: Brands
+          Child Navigation
+            *The North Face
+            *Patagonia
+            *Hydro Flask
 
-* = gerados dinamicamente baseados no navigation items
+* = dynamically generated based on navigation items.
 ```
 
-Just as an example, the `treePaht` for the first image would be something like: `header/menu/menu-item.root#brands/submenu.brands/menu-item.brand#thenorthface`.
+Just as an example, the `treePath` for the first image would be something like: `header/menu/menu-item.root#brands/submenu.brands/menu-item.brand#thenorthface`.
 
 ## Unresolved questions
 
@@ -364,14 +373,14 @@ This is also relevant to the implementation of [Slots](https://github.com/vtex-a
 
 Today, to decide which assets to load the server only needs to evaluate the `blocks.json` of the page. With this proposal this will need to change since there are interfaces inside the Navigation objects that need to be resolved and have their assets loaded.
 
-### Assets algorithm:
+#### Assets algorithm
 
 - getPageAssets(pageId):
 
     1. Let *blocks* be the result of *getPageBlocks(pageId)*
     2. Initialize *assets* to be a new Set
     3. For each block in *blocks*:
-    	a. Add to *assets* the result of *getBlockAssets(block.name, block.treePath, block.props)*
+      a. Add to *assets* the result of *getBlockAssets(block.name, block.treePath, block.props)*
     4. Return entries of *assets*
 
 - getBlockAssets(blockName, blockTreePath, blockProps):
@@ -380,10 +389,10 @@ Today, to decide which assets to load the server only needs to evaluate the `blo
     2. Let *interface* be the result of *getBlockInterface(blockName)*
     3. Add to *assets* the result of *getInterfaceAssets(interface)*
     4. If *interface.navigation* is true:
-    	a. Let *navigationId* be the value of *blockProps.navigationId* (( MORE THAN ONE NAVIGATION HOW? ))
-    	b. If *navigationId* is not set, return *assets*
-    	c. Let *navigation* be the result of *getNavigation(navigationId)*
-    	d. Add to *assets* the result of *getNavigationAssets(navigation, blockTreePath)*
+      a. Let *navigationId* be the value of *blockProps.navigationId* (( MORE THAN ONE NAVIGATION HOW? ))
+      b. If *navigationId* is not set, return *assets*
+      c. Let *navigation* be the result of *getNavigation(navigationId)*
+      d. Add to *assets* the result of *getNavigationAssets(navigation, blockTreePath)*
     5. Return *assets*
 
 - getNavigationAssets(navigation, treePath):
@@ -391,14 +400,14 @@ Today, to decide which assets to load the server only needs to evaluate the `blo
     1. Let *assets* be a new Set
     2. Add to *assets* the result of *getInterfaceAssets(navigation.itemInterface)*
     3. For each item in *navigation.items*
-    	a. Let *item* be the current item of the loop
-    	b. Let *itemTreePath* be *treePath* + '/' + *navigation.itemInterface* + '#' + *item.id*
-    	b. If *item.submenuInterface* is set:
-    	  1. Let *blockName* be *navigation.interfaceName*
-    	  2. Let *blockProps* be the result of *getBlockContent(itemTreePath)* 
-    	  1. Add to *assets* the result of *getBlockAssets(blockName, itemTreePath, blockProps)*
-    	c. If *item.children* is set:
-    	  1. Add to *assets* the result of *getNavigationAssets(item.children, itemTreePath)
+      a. Let *item* be the current item of the loop
+      b. Let *itemTreePath* be *treePath* + '/' + *navigation.itemInterface* + '#' + *item.id*
+      c. If *item.submenuInterface* is set:
+        1. Let *blockName* be *navigation.interfaceName*
+        2. Let *blockProps* be the result of *getBlockContent(itemTreePath)* 
+        3. Add to *assets* the result of *getBlockAssets(blockName, itemTreePath, blockProps)*
+      d. If *item.children* is set:
+        1. Add to *assets* the result of *getNavigationAssets(item.children, itemTreePath)
     4. Return *assets*
 
 - getBlockInterface(blockName):
@@ -409,5 +418,5 @@ Today, to decide which assets to load the server only needs to evaluate the `blo
 - getInterfaceName(blockName):
 
     1. If blockName has '#'
-    	a. Return string before '#'
+      a. Return string before '#'
     2. Return blockName
