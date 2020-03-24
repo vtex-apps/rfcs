@@ -106,7 +106,7 @@ Let's focus on just the `Men's` submenu, as shown in the image. To achieve this 
 }
 ```
 
-Then simply use the `menu`block in their theme, but now in a much simpler way, since a lot of the customisation of individual items will happen via CMS:
+Then simply use the `menu`block in their theme, but now in a much simpler way, since a lot of the customization of individual items will happen via CMS:
 
 ```jsonc
 {
@@ -132,7 +132,7 @@ With the two bits of code above, you should be able to generate a simple navigat
 
 ![als-menu-main-navigation](https://user-images.githubusercontent.com/27777263/77101988-ee5a7b80-69f6-11ea-87fb-412fb4cc4797.png)
 
-From this point on, the customisation of each submenu inside each of the `menu-item`s is done using the CMS and implemented `submenu`blocks. For the example we're working on, let's consider the submenu shown in the first image of the menu, where we have a **Featured** list of items and a few other lists which look all the same. To represent this kind of layout, a `submenu`block should be implemented, such as a `submenu.default`:
+From this point on, the customization of each submenu inside each of the `menu-item`s is done using the CMS and implemented `submenu`blocks. For the example we're working on, let's consider the submenu shown in the first image of the menu, where we have a **Featured** list of items and a few other lists which look all the same. To represent this kind of layout, a `submenu`block should be implemented, such as a `submenu.default`:
 
 ```jsonc
 {
@@ -173,18 +173,73 @@ Navigations are a way to represent a navigation structure as a _tree_ which will
 
 ```json
 {
-  "title": "string",
-  "id": "number",
-  "items": {
-    "type": "array",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+    },
+    "id": {
+      "type": "string",
+    },
     "items": {
-      "type": "object",
-      "properties": {
-        "id": "number",
-        "label": "string",
-        "link": "string",
-        "child": "number"
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id"],
+        "properties": {
+          "id": {
+            "type": "number",
+          },
+          "label": {
+            "type": "string",
+          },
+          "link": {
+            "type": "string",
+          },
+          "child": {
+            "type": "string",
+          }
+        },
+      }
+    }
+  },
+  "required": ["title", "id"]
+}
+```
+
+Two new _native types_ named `Navigation` and `ChildNavigation` will be created and used in `contentSchemas.json` to keep a consistent format being used across apps. It's content will be:
+
+```json
+{
+  "Navigation": {
+    "format": "Navigation",
+    "title": "Navigation",
+    "type": "object",
+    "properties": {
+      "id": {
+        "type": "number",
+        "format": "NavigationId"
       },
+      "Item": {
+        "type": "string",
+        "format": "Block"
+      }
+    }
+  },
+  "ChildNavigation": {
+    "format": "ChildNavigation",
+    "type": "object",
+    "properties": {
+      "id": {
+        "disabled": true,
+        "type": "number",
+        "format": "NavigationIdFromParent"
+      },
+      "Item": {
+        "type": "string",
+        "default": "string",
+        "format": "Block"
+      }
     }
   }
 }
@@ -200,9 +255,8 @@ interface Props {
   }
 }
 
-const Menu: FC<Props> = ({ mainNavigation }) => {
-  const navigation = useNavigation(mainNavigation.id)
-  const { Item } = mainNavigation
+const Menu: FC<Props> = ({ mainNavigation: { id, Item } }) => {
+  const navigation = useNavigation(id)
 
   return (
     <Fragment>
@@ -215,27 +269,18 @@ const Menu: FC<Props> = ({ mainNavigation }) => {
   )
 }
 
+// This would be in store/contentSchemas.json, here just for the sake of simplicity
 Menu.contentSchema = {
   properties: {
     mainNavigation: {
-      format: 'Navigation',
-      type: 'object',
-      properties: {
-        id: {
-          type: 'number',
-          format: 'NavigationId'
-        },
-        Item: {
-          type: 'string',
-          format: 'Block'
-        }
-      }
+      // Native type defined previously
+      $ref: "app:vtex.native-types#/definitions/Navigation"
     }
   }
 }
 ```
 
-The key point in this new implementation is the presence of a a `mainNavigation` prop, which takes an object with an `id` field - this should be the unique ID of a certain navigation defined over at `navigation.json` - and the `Item` prop, which is the first use of [Slots](https://github.com/vtex-apps/store-discussion/issues/213)  in our native blocks.
+The key point in this new implementation is the presence of a a `mainNavigation` prop, which takes an object with an `id` field - this should be the unique ID of a certain navigation defined over at `navigation.json` - and the `Item` prop, which is the first use of [Slots](https://github.com/vtex-apps/store-discussion/issues/213) in our native blocks.
 
 What this bit of code means it that the `menu` block will use the component it receives via `mainNavigation.Item` to render each individual item in the navigation with `id === mainNavigation.id`. In most cases, the block passed to `Item` will be a  variation of the `menu-item` interface.
 
@@ -253,34 +298,10 @@ Each `submenu` variant will have a `contentSchema` that look something like this
   "contentSchema": {
     "properties": {
       "mainNavigation": {
-        "format": "ChildNavigation",
-        "type": "object",
-        "properties": {
-        "id": {
-          "disabled": true,
-          "type": "number",
-          "format": "NavigationIdFromParent"
-        },
-        "Item": {
-          "type": "string",
-          "default": "menu-item.list",
-          "format": "Block"
-          }
-        }
+        "$ref": "app:vtex.native-types#/definitions/ChildNavigation"
       },
       "featuredLinks": {
-        "format": "Navigation",
-        "type": "object",
-        "properties": {
-          "id": {
-            "type": "number",
-            "format": "NavigationId"
-          },
-          "Item": {
-            "type": "string",
-            "format": "Block"
-          }
-        }
+        "$ref": "app:vtex.native-types#/definitions/Navigation"
       },
       "bottomText": {
         "type": "string",
@@ -305,20 +326,7 @@ Here is another example of possible `contentSchema` for a `submenu.brands`, that
   "contentSchema": {
     "properties": {
       "mainNavigation": {
-        "format": "ChildNavigation",
-        "type": "object",
-        "properties": {
-          "id": {
-            "disabled": true,
-            "type": "number",
-            "format": "NavigationIdFromParent"
-          },
-          "Item": {
-            "type": "string",
-            "default": "menu-item.brand",
-            "format": "Block"
-          }
-        }
+        "$ref": "app:vtex.native-types#/definitions/ChildNavigation"
       },
       "bottomText": {
         "type": "string",
@@ -329,7 +337,7 @@ Here is another example of possible `contentSchema` for a `submenu.brands`, that
 }
 ```
 
-In this case, using the CMS the user would see a structure similar structure to (some items were omited):
+In this case, using the CMS the user would see a structure similar structure to (some items were omitted):
 
 ```
 Header
