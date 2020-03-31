@@ -37,14 +37,14 @@ Example cherry-picking the important parts:
 .b--action-primary { border-color: var( --b-action-primary ); }
 ```
 
-Compiling the Tachyons with `compileVars: false`, it will make it possible to reference those variables in CSS.
+Compiling the Tachyons with `compileVars: false` will make it possible to reference those variables in CSS.
 
 Tachyons Generator needs to be changed to add some variables that are useful and not available as a CSS variable even with this option. The missing variables are:
 
 - **Breakpoints:** `--breakpoint-s`, `--breakpoint-ns`, `--breakpoint-m`, `--breakpoint-l`, and `--breakpoint-xl`
 - **Spacing:** `--spacing-1`, `--spacing-2`, `--spacing-3`, `--spacing-4`, `--spacing-5`, `--spacing-6`, `--spacing-7`, `--spacing-8`, `--spacing-9`, `--spacing-10`, and `--spacing-11`
 
-CSS Variables does not work in IE11 so we need to add a polyfill: https://github.com/nuxodin/ie11CustomProperties.
+CSS Variables does not work in IE11 so we need to add a [polyfil](https://github.com/nuxodin/ie11CustomProperties).
 
 # Drawbacks
 
