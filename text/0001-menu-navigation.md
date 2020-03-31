@@ -1,6 +1,8 @@
-# RFC Menu / Navigation
+- Start Date: 2020-03-19
+- Implementation PR:
+- Store Discussion Issue: n/a
 
-## Summary
+# Summary
 
 Today the main pain-points of using our `menu` block along with the other blocks exported by `vtex.menu` are:
 
@@ -11,7 +13,7 @@ The introduction of `list-context` components and the added capability of the `m
 
 In this RFC we propose a new way of dealing with navigation blocks, mainly the way users create menus throughout their stores. We are addressing all of the problems presented above while also keeping in mind the developments being made to create a new CMS for VTEX IO stores, where users will be able to edit this new Menu structures.
 
-## Basic example
+# Basic example
 
 This is a basic example of how a new Menu implementation would look like and what the users would need to code. Don't worry if this example does not make sense to you, we'll go deeper into the technical details.
 
@@ -163,7 +165,7 @@ Notice that the CMS plays a huge part in the process of developing a menu for yo
 
 Developers would only need to create different `submenu`s and `menu-item`s, which will be available for selection in the CMS interface. Also, `navigations.json`could also be editable via CMS in the future.
 
-## Detailed design
+# Detailed design
 
 In this section we'll go into the technical details and how we expect to implement this solution and how users would be expected to use it.
 
@@ -373,17 +375,17 @@ Header
 
 Just as an example, the `treePath` for the first image would be something like: `header/menu/menu-item.root#brands/submenu.brands/menu-item.brand#thenorthface`.
 
-## Unresolved questions
+# Unresolved questions
 
 We are still not totally sure on how the current algorithm responsible for resolving and fetching assets will have to be adjusted. Our solution idea is currently the one presented below and it will be updated as we work on it.
 
 This is also relevant to the implementation of [Slots](https://github.com/vtex-apps/store-discussion/issues/213) .
 
-### Changes to the rendering of the pages
+## Changes to the rendering of the pages
 
 Today, to decide which assets to load the server only needs to evaluate the `blocks.json` of the page. With this proposal this will need to change since there are interfaces inside the Navigation objects that need to be resolved and have their assets loaded.
 
-#### Assets algorithm
+### Assets algorithm
 
 - getPageAssets(pageId):
 
