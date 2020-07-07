@@ -18,7 +18,7 @@ They keep all packages in the same repository.
 
 # Motivation
 
-When the Store Framework started it had only one team united team with all the people in the same place and it had not so many apps (around 12 apps) to this team to support, so it was easy to control who was doing what and if it was being done respecting the standards of the framework, but today we have around 73 repositories that 6-7 different teams of VTEX support and on top of it now we have an open-source community that uses those apps and even contribute to it. With all this code base it became complicated to update tooling, fix technical depts, and even update these apps to respect best practices of code or API. With a monorepo we can get closer to the idea of creating a product that has the same ideas across all blocks.
+When the Store Framework started it had only one united team with all the people in the same place and it didn't have many apps (around 12 apps) for this team to support, so it was easy to control who was doing what and if it was being done respecting the standards of the framework, but today we have around 73 repositories that 6-7 different teams of VTEX support and on top of it, now we have an open-source community that uses those apps and even contribute to it. With all this code base it became complicated to update tooling, fix technical depts, and even update these apps to respect best practices of code or API. With a monorepo, we can get closer to the idea of creating a product that has the same ideas across all blocks.
 
 Pain points of keeping 73 repos up to date:
 
@@ -36,9 +36,16 @@ Since this is not a feature but an organizational change that might help everyon
 
 * Share code to make testing easier because we wouldn't need to mock all IO dependencies
 * Create a calendar of support for majors, like [NodeJS](https://nodejs.org/en/about/releases/)
-* Plan new majors for the whole framework
-* Create migration guides to each change of these majors
-* Predictable manual updates to our clients to get a better store
+  * Plan new majors for the whole framework
+  * Create migration guides to each change of these majors
+  * Predictable manual updates to our clients to get a better store
+
+## What kind of apps should not go to the monorepo
+
+* Pixel apps, e.g. https://github.com/vtex-apps/zendesk-chat
+* Template apps, e.g. https://github.com/vtex-apps/react-app-template
+* Theme apps, e.g. https://github.com/vtex-apps/store-theme
+* Store apps that are out of IO e.g. https://github.com/vtex/checkout-confirmation-ui
 
 # Drawbacks
 
