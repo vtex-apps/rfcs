@@ -17,7 +17,7 @@ Omit this section if it's not applicable.
 
 To create an abstraction for the following composition of blocks, being used today at [VTEX Store Theme](storetheme.vtex.com):
 
-![Captura de Tela 2020-07-14 às 17.46.09](/Users/victorhugo/Desktop/Captura de Tela 2020-07-14 às 17.46.09.png)
+![Highlights virtual block example](https://user-images.githubusercontent.com/27777263/87591405-a60a4c00-c6be-11ea-8ef6-975eb1592456.png)
 
 This is achieve through quite a bit of code. This is a `flex-layout.row`, containing four `flex-layout.col`s, each one containing a `image` and a `rich-text` block. The `blocks.json` that is written at `vtex.store-theme` to achieve this layout is the following (some properties were omitted to make the snippet shorter, but the full version can be found at [`store-theme`](https://github.com/vtex-apps/store-theme)):
 
